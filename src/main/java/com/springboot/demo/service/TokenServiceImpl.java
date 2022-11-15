@@ -1,5 +1,7 @@
 package com.springboot.demo.service;
 
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,9 @@ import com.springboot.demo.util.SaasUtil;
 
 @Service
 public class TokenServiceImpl implements TokenService {
+	
+	private static final Long EXPIRATION_TIME = 600000L;
+	
 	@Autowired
 	private TokenRepository tokenRepository;
 	
@@ -37,7 +42,13 @@ public class TokenServiceImpl implements TokenService {
 		return "Token Expired";
 	}
 
-	
-	
-	
+	@Override
+	public VerificationToken generateNewVerificationToken(String oldToken) {
+		VerificationToken verificationToken = tokenRepository.findByToken(oldToken);
+		String newToken = UUID.randomUUID().toString();
+		verificationToken.setToken(newToken);
+		verificationToken.setExpirationTime(SaasUtil.timeStampGenerator()+EXPIRATION_TIME);
+		return tokenRepository.saveAndFlush(verificationToken);
+	}
+
 }

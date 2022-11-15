@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.springboot.demo.domain.VerificationToken;
 import com.springboot.demo.dto.UserDTO;
 import com.springboot.demo.dto.response.ResponseDTO;
 import com.springboot.demo.enums.ResultStatus;
@@ -19,7 +20,10 @@ import com.springboot.demo.exception.TransformerException;
 import com.springboot.demo.service.TokenService;
 import com.springboot.demo.service.UserService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
+@Slf4j
 public class RegistrationController {
 	
 	@Autowired
@@ -40,7 +44,7 @@ public class RegistrationController {
         return updateResponse(response);
 	}
 	
-	@GetMapping("verifyRegistration")
+	@GetMapping("/verifyRegistration")
 	public String verifyRegistration(@RequestParam String token) {
 		String result = tokenService.validateVerificationToken(token);
 		if (result.equalsIgnoreCase("valid")) {
@@ -49,7 +53,17 @@ public class RegistrationController {
 		return "Bad User...";
 	}
 	
-	
+	@GetMapping("resendVerifyToken")
+	public String resendVerificationToken(@RequestParam String oldToken, HttpServletRequest request) {
+		VerificationToken verificationToken = tokenService.generateNewVerificationToken(oldToken);
+		resendVerificationTokenMail(verificationToken, request);
+		return "Verification mail sent..";
+	}
+
+	private void resendVerificationTokenMail(VerificationToken verificationToken, HttpServletRequest request) {
+		log.info("Click the link to verify your account: {}", getApplicationUrl(request)+"verifyRegistration?token="+verificationToken.getToken());
+	}
+
 	private String getApplicationUrl(HttpServletRequest request) {
 		return "http://"+request.getServerName()+":"+request.getServerPort()+request.getContextPath();
 	}

@@ -8,5 +8,7 @@ public interface TokenService {
 
 	String validateVerificationToken(String token);
 
+	VerificationToken generateNewVerificationToken(String oldToken);
+
 	
 }
