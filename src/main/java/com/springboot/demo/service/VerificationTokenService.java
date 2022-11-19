@@ -2,7 +2,7 @@ package com.springboot.demo.service;
 
 import com.springboot.demo.domain.VerificationToken;
 
-public interface TokenService {
+public interface VerificationTokenService {
 
 	VerificationToken saveVerificationToken(VerificationToken verificationToken);
 

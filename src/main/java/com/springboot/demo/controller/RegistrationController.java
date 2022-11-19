@@ -11,14 +11,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.springboot.demo.domain.PasswordResetToken;
 import com.springboot.demo.domain.VerificationToken;
+import com.springboot.demo.dto.PasswordDTO;
 import com.springboot.demo.dto.UserDTO;
 import com.springboot.demo.dto.response.ResponseDTO;
 import com.springboot.demo.enums.ResultStatus;
 import com.springboot.demo.event.RegistrationCompleteEvent;
 import com.springboot.demo.exception.TransformerException;
-import com.springboot.demo.service.TokenService;
+import com.springboot.demo.service.PasswordResetService;
 import com.springboot.demo.service.UserService;
+import com.springboot.demo.service.VerificationTokenService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,7 +33,10 @@ public class RegistrationController {
 	private UserService userService;
 	
 	@Autowired
-	private TokenService tokenService;
+	private VerificationTokenService verificationTokenService;
+	
+	@Autowired
+	private PasswordResetService passwordResetService;
 	
 	@Autowired
 	private ApplicationEventPublisher publisher;
@@ -46,7 +52,7 @@ public class RegistrationController {
 	
 	@GetMapping("/verifyRegistration")
 	public String verifyRegistration(@RequestParam String token) {
-		String result = tokenService.validateVerificationToken(token);
+		String result = verificationTokenService.validateVerificationToken(token);
 		if (result.equalsIgnoreCase("valid")) {
 			return "User Verified Successfully...";
 		}
@@ -55,13 +61,39 @@ public class RegistrationController {
 	
 	@GetMapping("resendVerifyToken")
 	public String resendVerificationToken(@RequestParam String oldToken, HttpServletRequest request) {
-		VerificationToken verificationToken = tokenService.generateNewVerificationToken(oldToken);
+		VerificationToken verificationToken = verificationTokenService.generateNewVerificationToken(oldToken);
 		resendVerificationTokenMail(verificationToken, request);
 		return "Verification mail sent..";
 	}
+	
+	@PostMapping("/resetPassword")
+	public String resetPassword(@RequestBody PasswordDTO passwordDTO, HttpServletRequest request) throws TransformerException {
+		UserDTO userDTO = userService.findUserByEmail(passwordDTO.getEmail());
+		if (null != userDTO) {
+			PasswordResetToken passwordResetToken = passwordResetService.createToken(userDTO);
+			sendPasswordResetTokenMail(passwordResetToken, request);
+			return "Password resend link send to your mail..";
+		}
+		return "Invalid email..";
+	}
+	
+	@PostMapping("/reset/password")
+	public String savePassword(@RequestParam String token, @RequestBody PasswordDTO passwordDTO) {
+		String result = passwordResetService.validatePasswordResetTokenAndSavePassword(token, passwordDTO);
+		return result;
+	}
+	
+	@PostMapping("/changePassword")
+	public String changePassword(@RequestBody PasswordDTO passwordDTO) throws TransformerException {
+		return userService.changePassword(passwordDTO);
+	}
+
+	private void sendPasswordResetTokenMail(PasswordResetToken passwordResetToken, HttpServletRequest request) {
+		log.info("Click the link to reset your password: {}", getApplicationUrl(request)+"/savePassword?token="+passwordResetToken.getToken());
+	}
 
 	private void resendVerificationTokenMail(VerificationToken verificationToken, HttpServletRequest request) {
-		log.info("Click the link to verify your account: {}", getApplicationUrl(request)+"verifyRegistration?token="+verificationToken.getToken());
+		log.info("Click the link to verify your account: {}", getApplicationUrl(request)+"/verifyRegistration?token="+verificationToken.getToken());
 	}
 
 	private String getApplicationUrl(HttpServletRequest request) {

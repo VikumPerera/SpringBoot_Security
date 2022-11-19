@@ -10,7 +10,7 @@ import com.springboot.demo.domain.User;
 import com.springboot.demo.domain.VerificationToken;
 import com.springboot.demo.dto.UserDTO;
 import com.springboot.demo.event.RegistrationCompleteEvent;
-import com.springboot.demo.service.TokenService;
+import com.springboot.demo.service.VerificationTokenService;
 
 import lombok.extern.slf4j.Slf4j;
 @Slf4j
@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 public class RegistrationCompleteEventListener implements ApplicationListener<RegistrationCompleteEvent>{
 	
 	@Autowired
-	private TokenService tokenService;
+	private VerificationTokenService tokenService;
 	
 	@Override
 	public void onApplicationEvent(RegistrationCompleteEvent event) {
