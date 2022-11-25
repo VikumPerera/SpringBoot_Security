@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.demo.domain.PasswordResetToken;
 import com.springboot.demo.domain.VerificationToken;
+import com.springboot.demo.dto.LoginRequestDTO;
 import com.springboot.demo.dto.PasswordDTO;
 import com.springboot.demo.dto.UserDTO;
 import com.springboot.demo.dto.response.ResponseDTO;
@@ -27,7 +29,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
-public class RegistrationController {
+public class UserController {
 	
 	@Autowired
 	private UserService userService;
@@ -87,6 +89,11 @@ public class RegistrationController {
 	public String changePassword(@RequestBody PasswordDTO passwordDTO) throws TransformerException {
 		return userService.changePassword(passwordDTO);
 	}
+	
+	@PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequestDTO) throws Exception{
+		return ResponseEntity.ok(userService.getToken(loginRequestDTO));
+    }
 
 	private void sendPasswordResetTokenMail(PasswordResetToken passwordResetToken, HttpServletRequest request) {
 		log.info("Click the link to reset your password: {}", getApplicationUrl(request)+"/savePassword?token="+passwordResetToken.getToken());
