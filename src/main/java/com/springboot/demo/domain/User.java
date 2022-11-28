@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -29,9 +30,11 @@ public class User {
 	@Column(length = 60)
 	private String password;
 	private boolean enabled=false;
+	private Long createdDate;
+	private Long modifiedDate;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private List<Role> roles;
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "user", fetch = FetchType.EAGER)
+    private List<UserRole> userRoles;
 	
 	public User(Long id) {
 		this.id = id;

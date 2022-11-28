@@ -20,10 +20,10 @@ import com.springboot.demo.transformer.ActionTransformer;
 public class ActionServiceImpl implements ActionService {
 	
 	@Autowired
-	ActionRepository actionRepository;
+	private ActionRepository actionRepository;
 	
 	@Autowired
-	ActionTransformer actionTransformer;
+	private ActionTransformer actionTransformer;
 	
 	private final Logger LOGGER =LoggerFactory.getLogger(ActionService.class);
 

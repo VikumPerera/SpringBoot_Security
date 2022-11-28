@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-public class RolePermission {
+public class UserRole {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
@@ -23,11 +23,11 @@ public class RolePermission {
 	private Long modifiedDate;
 	
 	@ManyToOne
-    @JoinColumn(name = "permissionId", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "FK_PERMISSION"))
-    private Permission permission;
+    @JoinColumn(name = "userId", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "FK_USER"))
+    private User user;
 	
 	@ManyToOne
-    @JoinColumn(name = "roleId", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "FK_ROLE_1"))
+    @JoinColumn(name = "roleId", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "FK_ROLE_2"))
     private Role role;
 	
 	

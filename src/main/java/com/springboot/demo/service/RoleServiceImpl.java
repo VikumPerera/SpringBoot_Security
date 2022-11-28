@@ -11,8 +11,10 @@ import org.springframework.stereotype.Service;
 
 import com.springboot.demo.constant.EntityNotFoundConstatnt;
 import com.springboot.demo.domain.Role;
+import com.springboot.demo.dto.PermissionDTO;
 import com.springboot.demo.dto.RoleDTO;
 import com.springboot.demo.exception.TransformerException;
+import com.springboot.demo.repository.PermissionRepository;
 import com.springboot.demo.repository.RoleRepository;
 import com.springboot.demo.transformer.RoleTransformer;
 
@@ -20,16 +22,26 @@ import com.springboot.demo.transformer.RoleTransformer;
 public class RoleServiceImpl implements RoleService {
 	
 	@Autowired
-	RoleRepository roleRepository;
+	private RoleRepository roleRepository;
 	
 	@Autowired
-	RoleTransformer roleTransformer;
+	private RoleTransformer roleTransformer;
+	
+	@Autowired
+	private PermissionRepository permissionRepository;
 	
 	private final Logger LOGGER =LoggerFactory.getLogger(RoleService.class);
 
 	@Override
 	public RoleDTO saveRole(RoleDTO roleDTO) throws TransformerException {
+		
+		for (PermissionDTO permissionDTO : roleDTO.getPermissionDTOs()) {
+			if (!permissionRepository.existsById(permissionDTO.getId())) {
+				throw new EntityNotFoundException("Permission not found...");
+			}
+		}
 		Role role = roleTransformer.transformDTOToDomain(roleDTO);
+		role.getRolePermissions().stream().forEach(rolePermission -> rolePermission.setRole(role));
 		return roleTransformer.transformDomainToDTO(roleRepository.saveAndFlush(role));
 	}
 

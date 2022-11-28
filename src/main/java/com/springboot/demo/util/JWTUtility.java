@@ -23,7 +23,7 @@ public class JWTUtility implements Serializable {
     private static final long serialVersionUID = 234234523523L;
 
     public static final long JWT_TOKEN_VALIDITY = 7 * 86400;
-	public static final String ROLES = "roles";
+	public static final String PERMISSIONS = "permissions";
 
 	private final SecretKey key;
 
@@ -59,14 +59,16 @@ public class JWTUtility implements Serializable {
 	public String generateToken(UserDetails userDetails) {
 
 		Map<String, Object> claims = new HashMap<>();
-		return doGenerateToken(claims, userDetails.getUsername());
+		return doGenerateToken(claims, userDetails);
 	}
 
-	private String doGenerateToken(Map<String, Object> claims, String subject) {
+	private String doGenerateToken(Map<String, Object> claims, UserDetails userDetails) {
 
-		return Jwts.builder().setClaims(claims).setSubject(subject)
+		return Jwts.builder().setClaims(claims).setSubject(userDetails.getUsername())
 				.setIssuedAt(new Date(System.currentTimeMillis()))
+				.claim(PERMISSIONS, userDetails.getAuthorities())
 				.setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
+				.setIssuer("Kognitiv")
 				.signWith(key, SignatureAlgorithm.HS512).compact();
 	}
 

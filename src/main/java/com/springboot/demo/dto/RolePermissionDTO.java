@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 public class RolePermissionDTO {
 
 	private Long id;
-	private String code;
 	private Long createdDate;
 	private Long modifiedDate;
     private PermissionDTO permissionDTO;

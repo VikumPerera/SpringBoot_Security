@@ -1,5 +1,7 @@
 package com.springboot.demo.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,5 +16,8 @@ public class UserDTO {
 	private String email;
 	private String password;
 	private String matchingPassword;
+	private List<RoleDTO> roleDTOs;
+	private Long createdDate;
+	private Long modifiedDate;
 	
 }

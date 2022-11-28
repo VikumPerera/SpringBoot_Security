@@ -20,10 +20,10 @@ import com.springboot.demo.transformer.ComponentTransformer;
 public class ComponentServiceImpl implements ComponentService {
 	
 	@Autowired
-	ComponentRepository componentRepository;
+	private ComponentRepository componentRepository;
 	
 	@Autowired
-	ComponentTransformer componentTransformer;
+	private ComponentTransformer componentTransformer;
 	
 	private final Logger LOGGER =LoggerFactory.getLogger(ComponentService.class);
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,11 +29,11 @@ public class Permission {
 	private Long modifiedDate;
 	
 	@ManyToOne
-    @JoinColumn(name = "componentId", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "componentId", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "FK_COMPONENT"))
     private Component component;
 	
 	@ManyToOne
-    @JoinColumn(name = "actionId", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "actionId", referencedColumnName = "id", nullable = false, foreignKey = @ForeignKey(name = "FK_ACTION"))
     private Action action;
 	
 	

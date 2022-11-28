@@ -29,6 +29,18 @@ public class WebSecurityConfig {
 	}
 	
 	@Bean
+	public WebSecurityCustomizer webSecurityCustomizer() {
+	    return web -> web.ignoring()
+	                       .antMatchers("/register")
+	                       .antMatchers("/verifyRegistration")
+	                       .antMatchers("/resendVerifyToken")
+	                       .antMatchers("/resetPassword")
+	                       .antMatchers("/reset/password")
+	                       .antMatchers("/changePassword")
+	                       .antMatchers("/login");
+	}
+
+	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http
 			.cors()
@@ -46,17 +58,7 @@ public class WebSecurityConfig {
 		return http.build();
 	}
 	
-	@Bean
-	public WebSecurityCustomizer webSecurityCustomizer() {
-	    return web -> web.ignoring()
-	                       .antMatchers("/register")
-	                       .antMatchers("/verifyRegistration")
-	                       .antMatchers("/resendVerifyToken")
-	                       .antMatchers("/resetPassword")
-	                       .antMatchers("/reset/password")
-	                       .antMatchers("/changePassword")
-	                       .antMatchers("/login");
-	}
+	
 	
 	
 }

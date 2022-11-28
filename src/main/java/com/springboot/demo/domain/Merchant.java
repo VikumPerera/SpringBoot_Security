@@ -1,14 +1,9 @@
 package com.springboot.demo.domain;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-public class Role {
+public class Merchant {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,11 +24,5 @@ public class Role {
 	private String code;
 	private Long createdDate;
 	private Long modifiedDate;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "role", fetch = FetchType.EAGER)
-    private List<RolePermission> rolePermissions;
-	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "role")
-    private List<UserRole> userRoles;
 
 }

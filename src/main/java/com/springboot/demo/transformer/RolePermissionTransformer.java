@@ -21,7 +21,6 @@ public class RolePermissionTransformer extends AbstractTransformer<RolePermissio
 	public RolePermissionDTO transformDomainToDTO(RolePermission domain) throws TransformerException {
 		RolePermissionDTO dto = new RolePermissionDTO();
 		dto.setId(dto.getId());
-		dto.setCode(dto.getCode());
 		dto.setCreatedDate(domain.getCreatedDate());
 		dto.setModifiedDate(domain.getModifiedDate());
 		dto.setPermissionDTO(permissionransformer.transformDomainToDTO(domain.getPermission()));
@@ -34,7 +33,6 @@ public class RolePermissionTransformer extends AbstractTransformer<RolePermissio
 		if (null != dto.getId()) {
 			domain.setId(dto.getId());
 		}
-		domain.setCode(dto.getCode());
 		domain.setCreatedDate(null != dto.getCreatedDate() ? dto.getCreatedDate() : SaasUtil.timeStampGenerator());
 		domain.setModifiedDate(SaasUtil.timeStampGenerator());
 		domain.setPermission(permissionransformer.transformDTOToDomain(dto.getPermissionDTO()));

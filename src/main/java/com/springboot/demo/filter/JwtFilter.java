@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -43,9 +44,16 @@ public class JwtFilter extends OncePerRequestFilter {
                     = userServiceImpl.loadUserByUsername(userName);
 
             if(jwtUtility.validateToken(token,userDetails)) {
+            	
+            	for (GrantedAuthority grantedAuthority : userDetails.getAuthorities()) {
+                	System.out.println(grantedAuthority.getAuthority());
+                }
+            	
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                         = new UsernamePasswordAuthenticationToken(userDetails,
                         null, userDetails.getAuthorities());
+                
+                
 
                 usernamePasswordAuthenticationToken.setDetails(
                         new WebAuthenticationDetailsSource().buildDetails(httpServletRequest)
