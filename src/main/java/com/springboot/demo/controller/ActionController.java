@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.demo.dto.ActionDTO;
 import com.springboot.demo.dto.response.ResponseDTO;
+import com.springboot.demo.dto.response.ResponseListDTO;
 import com.springboot.demo.enums.ResultStatus;
 import com.springboot.demo.exception.TransformerException;
 import com.springboot.demo.service.ActionService;
@@ -43,10 +44,23 @@ public class ActionController {
 	}
 	
 	@GetMapping("/actions")
-	public List<ActionDTO> getAllActions() throws TransformerException {
-		return actionService.getAllActions();
+	public ResponseListDTO<?> getAllActions() throws TransformerException {
+		
+		List<ActionDTO> actionDTOList = actionService.getAllActions();
+		ResponseListDTO<ActionDTO> response = new ResponseListDTO<>();
+		response.setPayloadDto(actionDTOList);
+		response.setCount(actionDTOList.size());
+		return updateResponse(response);
+
 	}
 	
+	private ResponseListDTO<?> updateResponse(ResponseListDTO<?> response) {
+		response.setResultStatus(ResultStatus.SUCCESSFUL);
+        response.setHttpStatus(HttpStatus.OK);
+        response.setHttpCode(response.getHttpStatus().toString());
+		return response;
+	}
+
 	private ResponseDTO<?> updateResponse(ResponseDTO<?> response) {
 		response.setResultStatus(ResultStatus.SUCCESSFUL);
         response.setHttpStatus(HttpStatus.OK);

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.demo.dto.MerchantDTO;
 import com.springboot.demo.dto.response.ResponseDTO;
+import com.springboot.demo.dto.response.ResponseListDTO;
 import com.springboot.demo.enums.ResultStatus;
 import com.springboot.demo.exception.TransformerException;
 import com.springboot.demo.service.MerchantService;
@@ -51,8 +52,14 @@ public class MerchantController {
 	
 	@GetMapping("/merchants")
 	@PreAuthorize("hasAuthority('VIEW_LIST_MERCHANT')")
-	public List<MerchantDTO> getAllMerchants() throws TransformerException {
-		return merchantService.getAllMerchants();
+	public ResponseListDTO<?> getAllMerchants() throws TransformerException {
+		
+		List<MerchantDTO> merchantDTOList = merchantService.getAllMerchants();
+		ResponseListDTO<MerchantDTO> response = new ResponseListDTO<>();
+		response.setPayloadDto(merchantDTOList);
+		response.setCount(merchantDTOList.size());
+		return updateResponse(response);
+
 	}
 	
 	@PutMapping("/merchants/{id}")
@@ -68,6 +75,13 @@ public class MerchantController {
 	}
 
 	private ResponseDTO<?> updateResponse(ResponseDTO<?> response) {
+		response.setResultStatus(ResultStatus.SUCCESSFUL);
+        response.setHttpStatus(HttpStatus.OK);
+        response.setHttpCode(response.getHttpStatus().toString());
+		return response;
+	}
+	
+	private ResponseListDTO<?> updateResponse(ResponseListDTO<?> response) {
 		response.setResultStatus(ResultStatus.SUCCESSFUL);
         response.setHttpStatus(HttpStatus.OK);
         response.setHttpCode(response.getHttpStatus().toString());

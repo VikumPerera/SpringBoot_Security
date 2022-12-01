@@ -1,5 +1,7 @@
 package com.springboot.demo.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import com.springboot.demo.dto.LoginRequestDTO;
 import com.springboot.demo.dto.PasswordDTO;
 import com.springboot.demo.dto.UserDTO;
 import com.springboot.demo.dto.response.ResponseDTO;
+import com.springboot.demo.dto.response.ResponseListDTO;
 import com.springboot.demo.enums.ResultStatus;
 import com.springboot.demo.event.RegistrationCompleteEvent;
 import com.springboot.demo.exception.TransformerException;
@@ -94,6 +97,17 @@ public class UserController {
     public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequestDTO) throws Exception{
 		return ResponseEntity.ok(userService.getToken(loginRequestDTO));
     }
+	
+	@GetMapping("/users")
+	public ResponseListDTO<?> getAllRoles() throws TransformerException {
+		
+		List<UserDTO> userDTOList = userService.getAllUsers();
+		ResponseListDTO<UserDTO> response = new ResponseListDTO<>();
+		response.setPayloadDto(userDTOList);
+		response.setCount(userDTOList.size());
+		return updateResponse(response);
+
+	}
 
 	private void sendPasswordResetTokenMail(PasswordResetToken passwordResetToken, HttpServletRequest request) {
 		log.info("Click the link to reset your password: {}", getApplicationUrl(request)+"/savePassword?token="+passwordResetToken.getToken());
@@ -109,6 +123,13 @@ public class UserController {
 
 
 	private ResponseDTO<?> updateResponse(ResponseDTO<?> response) {
+		response.setResultStatus(ResultStatus.SUCCESSFUL);
+        response.setHttpStatus(HttpStatus.OK);
+        response.setHttpCode(response.getHttpStatus().toString());
+		return response;
+	}
+	
+	private ResponseListDTO<?> updateResponse(ResponseListDTO<?> response) {
 		response.setResultStatus(ResultStatus.SUCCESSFUL);
         response.setHttpStatus(HttpStatus.OK);
         response.setHttpCode(response.getHttpStatus().toString());

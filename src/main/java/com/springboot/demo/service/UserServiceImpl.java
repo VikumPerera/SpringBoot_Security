@@ -1,6 +1,7 @@
 package com.springboot.demo.service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.EntityNotFoundException;
@@ -91,17 +92,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			throw new UsernameNotFoundException("No user found");
 		}
 		
-		try {
-			return new org.springframework.security.core.userdetails.User(
-					user.getEmail(), 
-					user.getPassword(), 
-					user.isEnabled(), 
-					true, true, true, 
-					getAuthority(user));
-		} catch (EntityNotFoundException | TransformerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
+			try {
+				return new org.springframework.security.core.userdetails.User(
+						user.getEmail(), 
+						user.getPassword(), 
+						user.isEnabled(), 
+						true, true, true, 
+						getAuthority(user));
+			} catch (EntityNotFoundException e) {
+				e.printStackTrace();
+			} catch (TransformerException e) {
+				e.printStackTrace();
+			}
 		return null;
 	}
 
@@ -125,6 +128,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			return new JWTResponseDTO(token);
 		}
 		throw new BadCredentialsException("Invalid Credintials...");
+	}
+
+
+	@Override
+	public List<UserDTO> getAllUsers() throws TransformerException {
+		return userTransformer.transformDomainToDTO(userRepository.findAll());
 	}
 
 }

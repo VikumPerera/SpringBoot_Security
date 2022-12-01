@@ -60,6 +60,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 );
 
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                httpServletResponse.addHeader("New Header", "Vikum");
             }
 
         }

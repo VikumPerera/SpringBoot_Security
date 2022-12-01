@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.demo.dto.RoleDTO;
 import com.springboot.demo.dto.response.ResponseDTO;
+import com.springboot.demo.dto.response.ResponseListDTO;
 import com.springboot.demo.enums.ResultStatus;
 import com.springboot.demo.exception.TransformerException;
 import com.springboot.demo.service.RoleService;
@@ -43,11 +44,24 @@ public class RoleController {
 	}
 	
 	@GetMapping("/roles")
-	public List<RoleDTO> getAllRoles() throws TransformerException {
-		return roleService.getAllRoles();
+	public ResponseListDTO<?> getAllRoles() throws TransformerException {
+		
+		List<RoleDTO> roleDTOList = roleService.getAllRoles();
+		ResponseListDTO<RoleDTO> response = new ResponseListDTO<>();
+		response.setPayloadDto(roleDTOList);
+		response.setCount(roleDTOList.size());
+		return updateResponse(response);
+
 	}
 	
 	private ResponseDTO<?> updateResponse(ResponseDTO<?> response) {
+		response.setResultStatus(ResultStatus.SUCCESSFUL);
+        response.setHttpStatus(HttpStatus.OK);
+        response.setHttpCode(response.getHttpStatus().toString());
+		return response;
+	}
+	
+	private ResponseListDTO<?> updateResponse(ResponseListDTO<?> response) {
 		response.setResultStatus(ResultStatus.SUCCESSFUL);
         response.setHttpStatus(HttpStatus.OK);
         response.setHttpCode(response.getHttpStatus().toString());

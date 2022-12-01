@@ -1,5 +1,7 @@
 package com.springboot.demo.service;
 
+import java.util.List;
+
 import com.springboot.demo.dto.JWTResponseDTO;
 import com.springboot.demo.dto.LoginRequestDTO;
 import com.springboot.demo.dto.PasswordDTO;
@@ -15,5 +17,7 @@ public interface UserService {
 	String changePassword(PasswordDTO passwordDTO);
 
 	JWTResponseDTO getToken(LoginRequestDTO loginRequestDTO);
+
+	List<UserDTO> getAllUsers() throws TransformerException;
 
 }
